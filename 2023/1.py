@@ -28,4 +28,15 @@ def get_num2(line, d):
     return int(nums[0])*10 + int(nums[-1])
 
 def solve2(lines, **kwargs):
+    d = {
+        "one":1, 
+        "two":2, 
+        "three":3, 
+        "four":4, 
+        "five":5, 
+        "six":6, 
+        "seven":7, 
+        "eight":8, 
+        "nine": 9
+    }
     return sum([get_num2(line, d) for line in lines])
