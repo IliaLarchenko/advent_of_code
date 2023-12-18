@@ -51,7 +51,6 @@ def solve2(notes, **kwargs):
         vert = find_mirror(h_line_vert)
         hor = find_mirror(h_line_hor)
 
-        ans = []
         for i in range(len(note)):
             for j in range(len(note[0])):
                 if note[i][j] == ".":
@@ -69,10 +68,8 @@ def solve2(notes, **kwargs):
 
                 if vert != vert1 and vert1 != 0:
                     n += vert1 * 100
-                    ans.append(("v", i, j, vert1, vert))
                 if hor1 != hor and hor1 != 0:
                     n += hor1
-                    ans.append(("h", i, j, hor1, hor))
 
                 if note[i][j] == ".":
                     note[i][j] = "#"
