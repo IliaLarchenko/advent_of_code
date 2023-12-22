@@ -123,7 +123,11 @@ def get_result(matrix, N, steps_to_corners, size, odd_full, even_full):
 
 
 def solve2(lines, **kwargs):
-    # it is a solution very specifc for the input
+    # This solution is specifc to the input
+    # But I tried to make it more generic and with small changes it can
+    # be used for other inputs (with limitaion)
+    # It can be simplified more for the given input
+
     matrix, S = get_matrix(lines)
     N = 26501365
 
