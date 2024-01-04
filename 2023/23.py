@@ -59,47 +59,39 @@ def get_adj2(i, j, lines):
 
 
 def solve2(lines, S, F, **kwargs):
-    # it is not an efficient solution, just a bruteforce, but it works in reasonable time
     adj_dict = {}
     for i in range(len(lines)):
         for j in range(len(lines[0])):
             if lines[i][j] != "#":
-                adj_dict[(i, j)] = get_adj2(i, j, lines)
+                adj_dict[(i, j)] = {x: 1 for x in get_adj2(i, j, lines)}
+
+    # simplify the graph
+    for k, v in list(adj_dict.items()):
+        if len(v) == 2:
+            items = list(v.items())
+            prev = items[0]
+            nxt = items[1]
+
+            adj_dict[prev[0]][nxt[0]] = nxt[1] + adj_dict[prev[0]][k]
+            adj_dict[nxt[0]][prev[0]] = prev[1] + adj_dict[nxt[0]][k]
+
+            adj_dict[prev[0]].pop(k)
+            adj_dict[nxt[0]].pop(k)
+            adj_dict.pop(k)
 
     max_len = 0
-    routes = [(set([S, (S[0] + 1, S[1])]), (S[0] + 1, S[1]))]
+    routes = [(set([S]), S, 0)]
 
     while len(routes) > 0:
-        # this one lets you get the correct answer before it goes through all options
-        # need to import random
-        # if random.random() < 0.0001:
-        #     print(len(routes),max_len)
-        visited, current = routes.pop()
-        next_steps = adj_dict[current[0], current[1]]
+        visited, current, total_len = routes.pop()
 
-        while len(next_steps) == 2:
-            if next_steps[0] in visited:
-                i, j = next_steps[1]
-            else:
-                i, j = next_steps[0]
-            next_steps = []
-            if (i, j) == F:
-                max_len = max(max_len, len(visited))
-            elif (i, j) not in visited:
-                visited.add((i, j))
-                current = (i, j)
-                next_steps = adj_dict[i, j]
+        if current == F:
+            max_len = max(max_len, total_len)
 
-        if len(next_steps) == 1:
-            continue
-
-        if len(next_steps) > 2:
-            for i, j in next_steps:
-                if (i, j) == F:
-                    max_len = max(max_len, len(visited))
-                if (i, j) not in visited:
-                    dub_visited = visited.copy()
-                    dub_visited.add((i, j))
-                    routes.append((dub_visited, (i, j)))
+        for (i, j), weight in adj_dict[(current[0], current[1])].items():
+            if (i, j) not in visited:
+                new_visited = visited.copy()
+                new_visited.add((i, j))
+                routes.append((new_visited, (i, j), total_len + weight))
 
     return max_len
