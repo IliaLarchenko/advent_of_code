@@ -31,9 +31,6 @@ int main() {
     }
   }
 
-  std::cout << len_code << std::endl;
-  std::cout << len_mem << std::endl;
-
   ans1 = len_code - len_mem;
 
   std::cout << "Part 1 answer:" << std::endl;
