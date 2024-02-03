@@ -29,6 +29,10 @@ void min_quant(int i, int sums[3], long long prods[3], int counts[3],
     return;
   }
 
+  if (sums[0] + (best_count - counts[0]) * presents[i] < target) {
+    return;
+  }
+
   for (int j = 0; j < 3; j++) {
     int new_sums[3] = {sums[0], sums[1], sums[2]};
     long long new_prods[3] = {prods[0], prods[1], prods[2]};
@@ -54,7 +58,6 @@ void min_quant2(int i, int sums[4], long long prods[4], int counts[4],
         if (counts[0] <= best_count && prods[0] < best_prod) {
           best_prod = prods[0];
           best_count = counts[0];
-          std::cout << best_count << " " << best_prod << std::endl;
         }
       }
     }
@@ -67,6 +70,10 @@ void min_quant2(int i, int sums[4], long long prods[4], int counts[4],
   }
 
   if (counts[0] > best_count || prods[0] > best_prod) {
+    return;
+  }
+
+  if (sums[0] + (best_count - counts[0]) * presents[i] < target) {
     return;
   }
 
@@ -108,7 +115,7 @@ int main() {
   long long prods[3] = {1, 1, 1};
   int counts[3] = {0, 0, 0};
 
-  int best_count = 1000000000;
+  int best_count = 6;
   long long best_prod = 999999999999999;
 
   min_quant(presents.size() - 1, sums, prods, counts, target, presents,
@@ -122,7 +129,7 @@ int main() {
   long long prods2[4] = {1, 1, 1, 1};
   int counts2[4] = {0, 0, 0, 0};
 
-  best_count = 1000000000;
+  best_count = 6;
   best_prod = 999999999999999;
 
   target = total / 4;
