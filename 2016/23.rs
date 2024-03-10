@@ -200,7 +200,6 @@ fn main() {
     println!("Part 1 answer:");
     println!("{}", ans1);
 
-    //Should optimize this by finding the pattern
     ans2 = run_instructions(&mut instructions2, 12);
 
     println!("Part 2 answer:");
