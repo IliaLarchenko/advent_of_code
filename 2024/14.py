@@ -16,12 +16,7 @@ def prepare_data(file="input.txt"):
 
 
 def make_n_steps(positions, velocities, h, w, n=1):
-    positions = positions.copy()
-    for _ in range(n):
-        for i, (p, v) in enumerate(zip(positions, velocities)):
-            positions[i] = ((p[0] + v[0]) % w, (p[1] + v[1]) % h)
-
-    return positions
+    return [((p[0] + v[0] * n) % w, (p[1] + v[1] * n) % h) for p, v in zip(positions, velocities)]
 
 
 def solve1(positions, velocities, h, w, **kwargs):
@@ -43,10 +38,15 @@ def solve1(positions, velocities, h, w, **kwargs):
     return ans
 
 
-def print_map(h, w, positions, empty="_", robot="H"):
+def get_map(h, w, positions, empty="_", robot="H"):
     matrix = [[empty for __ in range(w)] for _ in range(h)]
     for p in positions:
         matrix[p[1]][p[0]] = robot
+
+    return matrix
+
+
+def print_map(matrix):
     print("\n".join(["".join(line) for line in matrix]))
 
 
@@ -55,7 +55,7 @@ def print_first_n(n, h, w, positions, velocities, empty="_", robot="H"):
     for i in range(n):
         print(i)
         print_map(h, w, positions, empty, robot)
-        positions = make_n_steps(positions, velocities, n=1)
+        positions = make_n_steps(positions, velocities, h, w, n=1)
 
 
 def solve2(positions, velocities, h, w, horizontal_pattern=12, vertical_pattern=69, **kwargs):
@@ -70,6 +70,37 @@ def solve2(positions, velocities, h, w, horizontal_pattern=12, vertical_pattern=
             vertical_pattern += w
 
     positions = make_n_steps(positions, velocities, h, w, n=vertical_pattern)
-    print_map(h, w, positions)
 
     return vertical_pattern
+
+
+def find_outliers(positions, velocities, h, w, n_max=10000):
+    max_statistics = 0
+    steps = 0
+
+    for n in range(n_max):
+        x_counter = {}
+        y_counter = {}
+        for p in positions:
+            x_counter[p[0]] = x_counter.get(p[0], 0) + 1
+            y_counter[p[1]] = y_counter.get(p[1], 0) + 1
+        max_vertical = max(x_counter.values())
+        max_horizontal = max(y_counter.values())
+        if max_vertical * max_horizontal >= max_statistics:
+            max_statistics = max_vertical * max_horizontal
+            steps = n
+        positions = make_n_steps(positions, velocities, h, w, n=1)
+
+    return steps
+
+
+def solve2_alt(positions, velocities, h, w, **kwargs):
+    # Find the number of steps with unusually high number of robots in same column and same row
+
+    steps = find_outliers(positions, velocities, h, w, n_max=10000)
+    positions = make_n_steps(positions, velocities, h, w, n=steps)
+
+    matrix = get_map(h, w, positions)
+    print_map(matrix)
+
+    return steps
