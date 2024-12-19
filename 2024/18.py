@@ -51,7 +51,7 @@ def solve1(space, bytes=1024, size=(71, 71), **kwargs):
 
 
 def solve2(space, size=(71, 71), **kwargs):
-    search_range = [0, 1_000_000]
+    search_range = [0, len(space) + 1]
 
     while True:
         n = sum(search_range) // 2
